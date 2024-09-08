@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factuur {{ invoice_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <h1>Factuur</h1>
+                                Factuurnummer: {{ invoice_number }}<br>
+                                Factuurdatum: {{ invoice_date }}<br>
+                                Vervaldatum: {{ due_date }}
+                            </td>
+                            <td>
+                                <!-- Your company logo here -->
+                                <img src="{{ company_logo_url }}" style="width:100%; max-width:300px;">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>{{ company_name }}</strong><br>
+                                {{ company_address }}<br>
+                                {{ company_postal_code }} {{ company_city }}<br>
+                                KvK: {{ company_kvk }}<br>
+                                BTW: {{ company_vat }}
+                            </td>
+                            <td>
+                                <strong>Factuur aan:</strong><br>
+                                {{ client_name }}<br>
+                                {{ client_address }}<br>
+                                {{ client_postal_code }} {{ client_city }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="heading">
+                <td>Product/Dienst</td>
+                <td>Bedrag</td>
+            </tr>
+
+            {% for item in invoice_items %}
+            <tr class="item">
+                <td>{{ item.description }}</td>
+                <td>€ {{ "%.2f"|format(item.amount) }}</td>
+            </tr>
+            {% endfor %}
+
+            <tr class="total">
+                <td></td>
+                <td>
+                    Subtotaal: € {{ "%.2f"|format(subtotal) }}<br>
+                    BTW ({{ vat_rate }}%): € {{ "%.2f"|format(vat_amount) }}<br>
+                    <strong>Totaal: € {{ "%.2f"|format(total) }}</strong>
+                </td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 30px;">
+            <h3>Betalingsinformatie</h3>
+            <p>
+                Gelieve het totaalbedrag over te maken naar:<br>
+                IBAN: {{ company_iban }}<br>
+                BIC: {{ company_bic }}<br>
+                T.n.v.: {{ company_name }}<br>
+                Onder vermelding van: Factuurnummer {{ invoice_number }}
+            </p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <p>Betalingstermijn: {{ payment_term }} dagen</p>
+            <p>Op deze factuur zijn onze algemene voorwaarden van toepassing.</p>
+        </div>
+    </div>
+</body>
+
+</html>
